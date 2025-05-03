@@ -1,1 +1,261 @@
+-- Load Linoria Library and ThemeManager
+local repo = 'https://raw.githubusercontent.com/violin-suzutsuki/LinoriaLib/main/'
+local Library = loadstring(game:HttpGet(repo .. 'Library.lua'))()
+local ThemeManager = loadstring(game:HttpGet(repo .. 'addons/ThemeManager.lua'))()
 
+-- Create the main UI window
+local Window = Library:CreateWindow({
+    Title = 'Auralis | Premium Version',
+    Center = true,
+    AutoShow = true
+})
+
+-- Create tabs
+local Tabs = {
+    Main = Window:AddTab('Main'),
+    Extra = Window:AddTab('Extra')
+}
+
+-- Create groupboxes in the tabs
+local MainLeftBox = Tabs.Main:AddLeftGroupbox('Auto')
+local ExtraLeftBox = Tabs.Extra:AddLeftGroupbox('Extra')
+local ExtraRightBox = Tabs.Extra:AddRightGroupbox('Info')
+
+-- Inf Money Toggle
+local infMoneyEnabled = false
+local infMoneyConnection
+
+MainLeftBox:AddToggle('InfMoneyToggle', {
+    Text = 'Inf Money',
+    Default = false,
+    Tooltip = 'Toggles infinite money exploit.',
+    Callback = function(state)
+        infMoneyEnabled = state
+
+        if state then
+            infMoneyConnection = task.spawn(function()
+                while infMoneyEnabled do
+                    local args = { 200 }
+
+                    local path = game:GetService("ReplicatedStorage")
+                        :WaitForChild("rbxts_include")
+                        :WaitForChild("node_modules")
+                        :WaitForChild("@rbxts")
+                        :WaitForChild("remo")
+                        :WaitForChild("src")
+                        :WaitForChild("container")
+                        :WaitForChild("plinko.onBallCollected")
+
+                    path:FireServer(unpack(args))
+                    task.wait(0.1)
+                end
+            end)
+        else
+            infMoneyEnabled = false
+        end
+    end
+})
+
+-- Auto Collect Gifts Toggle
+local collectGiftsEnabled = false
+local collectGiftsThread
+
+MainLeftBox:AddToggle('AutoCollectGiftsToggle', {
+    Text = 'Auto Collect Gifts',
+    Default = false,
+    Tooltip = 'Auto collects claimable playtime gifts',
+    Callback = function(state)
+        collectGiftsEnabled = state
+
+        if state then
+            collectGiftsThread = task.spawn(function()
+                local remote = game:GetService("ReplicatedStorage")
+                    :WaitForChild("rbxts_include")
+                    :WaitForChild("node_modules")
+                    :WaitForChild("@rbxts")
+                    :WaitForChild("remo")
+                    :WaitForChild("src")
+                    :WaitForChild("container")
+                    :WaitForChild("playtimeRewards.claim")
+
+                while collectGiftsEnabled do
+                    for i = 0, 11 do
+                        local args = { tostring(i) }
+                        pcall(function()
+                            remote:InvokeServer(unpack(args))
+                        end)
+                        task.wait(0.1)
+                    end
+                    task.wait(5)
+                end
+            end)
+        else
+            collectGiftsEnabled = false
+        end
+    end
+})
+
+-- Auto Claim Daily Toggle
+local autoClaimDailyEnabled = false
+local autoClaimDailyThread
+
+MainLeftBox:AddToggle('AutoClaimDailyToggle', {
+    Text = 'Auto Claim Daily',
+    Default = false,
+    Tooltip = 'Automatically claims your daily reward',
+    Callback = function(state)
+        autoClaimDailyEnabled = state
+
+        if state then
+            autoClaimDailyThread = task.spawn(function()
+                local remote = game:GetService("ReplicatedStorage")
+                    :WaitForChild("rbxts_include")
+                    :WaitForChild("node_modules")
+                    :WaitForChild("@rbxts")
+                    :WaitForChild("remo")
+                    :WaitForChild("src")
+                    :WaitForChild("container")
+                    :WaitForChild("daily.claim")
+
+                while autoClaimDailyEnabled do
+                    pcall(function()
+                        remote:FireServer()
+                    end)
+                    task.wait(60)
+                end
+            end)
+        else
+            autoClaimDailyEnabled = false
+        end
+    end
+})
+
+-- Auto Equip Best Pets Toggle
+local autoEquipPetsEnabled = false
+local autoEquipPetsThread
+
+MainLeftBox:AddToggle('AutoEquipBestPets', {
+    Text = 'Auto Equip Best Pets',
+    Default = false,
+    Tooltip = 'Automatically equips your best pets',
+    Callback = function(state)
+        autoEquipPetsEnabled = state
+
+        if state then
+            autoEquipPetsThread = task.spawn(function()
+                local remote = game:GetService("ReplicatedStorage")
+                    :WaitForChild("rbxts_include")
+                    :WaitForChild("node_modules")
+                    :WaitForChild("@rbxts")
+                    :WaitForChild("remo")
+                    :WaitForChild("src")
+                    :WaitForChild("container")
+                    :WaitForChild("pets.equipBest")
+
+                while autoEquipPetsEnabled do
+                    pcall(function()
+                        remote:InvokeServer()
+                    end)
+                    task.wait(30)
+                end
+            end)
+        else
+            autoEquipPetsEnabled = false
+        end
+    end
+})
+
+-- Auto Upgrade Toggle
+local autoUpgradeEnabled = false
+local autoUpgradeThread
+
+MainLeftBox:AddToggle('AutoUpgrade', {
+    Text = 'Auto Upgrade',
+    Default = false,
+    Tooltip = 'Automatically upgrades from 1 to 64',
+    Callback = function(state)
+        autoUpgradeEnabled = state
+
+        if state then
+            autoUpgradeThread = task.spawn(function()
+                local remote = game:GetService("ReplicatedStorage")
+                    :WaitForChild("rbxts_include")
+                    :WaitForChild("node_modules")
+                    :WaitForChild("@rbxts")
+                    :WaitForChild("remo")
+                    :WaitForChild("src")
+                    :WaitForChild("container")
+                    :WaitForChild("upgrade")
+
+                while autoUpgradeEnabled do
+                    for i = 1, 64 do
+                        local args = { i }
+                        pcall(function()
+                            remote:InvokeServer(unpack(args))
+                        end)
+                        task.wait(0.1)
+                    end
+                    task.wait(5)
+                end
+            end)
+        else
+            autoUpgradeEnabled = false
+        end
+    end
+})
+
+-- Auto Collect Lucky Block Toggle
+local autoLuckyEnabled = false
+local autoLuckyThread
+
+MainLeftBox:AddToggle('AutoLuckyBlockToggle', {
+    Text = 'Auto Collect Lucky Block',
+    Default = false,
+    Tooltip = 'Automatically collects lucky block reward',
+    Callback = function(state)
+        autoLuckyEnabled = state
+
+        if state then
+            autoLuckyThread = task.spawn(function()
+                local remote = game:GetService("ReplicatedStorage")
+                    :WaitForChild("rbxts_include")
+                    :WaitForChild("node_modules")
+                    :WaitForChild("@rbxts")
+                    :WaitForChild("remo")
+                    :WaitForChild("src")
+                    :WaitForChild("container")
+                    :WaitForChild("lucky.claim")
+
+                while autoLuckyEnabled do
+                    pcall(function()
+                        remote:FireServer()
+                    end)
+                    task.wait(10)
+                end
+            end)
+        else
+            autoLuckyEnabled = false
+        end
+    end
+})
+
+-- UI Toggle Keybind Picker
+ExtraRightBox:AddLabel('UI Toggle Key'):AddKeyPicker('ToggleUIKeybind', {
+    Default = 'RightShift',
+    SyncToggleState = false,
+    Mode = 'Toggle',
+    Text = 'Toggle UI',
+    NoUI = false,
+    Callback = function()
+        Library:Toggle()
+    end
+})
+
+-- Close UI Button
+ExtraRightBox:AddButton('Close UI', function()
+    Library:Unload()
+end)
+
+-- Optional: Theme setup
+ThemeManager:SetLibrary(Library)
+ThemeManager:ApplyTheme('Default')
